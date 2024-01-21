@@ -1,27 +1,50 @@
-let video = document.querySelectorAll("video")[0];
-let changeObserver = new MutationObserver(newTime);
+const video = document.querySelectorAll("video")[0];
 let time;
-changeObserver.observe(video , {attributes: true});
 
-function newTime() {
-    let duration = video.duration;
-    let speed = video.playbackRate;
-    let reducedSeconds = Math.floor(duration / speed);
-    let minutes = reducedSeconds / 60;
-    let fraction = minutes - Math.floor(minutes);
-    let seconds = Math.floor(fraction*60);
-    console.log(`${Math.floor(minutes)}mins ${seconds}sec`)
-    time = `${Math.floor(minutes)}mins ${seconds}sec`;
+if (!video) {
+
+  console.error("Video element not found")
 }
 
-chrome.runtime.sendMessage({ time });
+else {  
 
+  const changeObserver = new MutationObserver(newLength);
+  changeObserver.observe(video, { attributes: true });
+
+}
+
+// Logic for calculating time in minutes and seconds 
+function calculateTime() {
+
+  let duration = video.duration;   // gives the duration in seconds
+  let speed = video.playbackRate;
+  let reducedSeconds = Math.floor(duration / speed);
+  let minutes = reducedSeconds / 60;
+  let remainingFraction = minutes - Math.floor(minutes);
+  let seconds = Math.floor(remainingFraction * 60);
+
+  return { minutes, seconds };
+
+}
+
+// send the length to popup.js
+function sendLength() {
+
+  let { minutes, seconds } = calculateTime();  // destructuring
+  time = `${Math.floor(minutes)} min ${seconds} sec`;
+  chrome.runtime.sendMessage({ time });
+  
+  console.log(`${Math.floor(minutes)}mins ${seconds}sec`)
+}
+
+function newLength() {
+  sendLength();
+}
 
 // Listen for the extension button click
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.action === "getVideoDuration") {
-        // Send the video duration when the button is clicked
-        chrome.runtime.sendMessage({time});
-    }
+  if (message.action === "getVideoDuration") {
+    // Send the video duration when the button is clicked
+    chrome.runtime.sendMessage({ time });
+  }
 });
-
