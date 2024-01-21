@@ -1,17 +1,28 @@
-const video = document.querySelectorAll("video")[0];
+let video;
 let time;
+let intervalID;
 
-if (!video) {
+function checkVideo() {
+  video = document.querySelectorAll("video")[0];
 
-  console.error("Video element not found")
+  if (video) {
+
+    clearInterval(intervalID);  // stop the interval when the video element is found
+    const changeObserver = new MutationObserver(newLength);
+    changeObserver.observe(video, { attributes: true });
+
+  }
+
+  else {
+
+    console.error("Video element not found")
+
+  }
+
 }
 
-else {  
+intervalID = setInterval(checkVideo, 100);   //repeatedly call checkVideo
 
-  const changeObserver = new MutationObserver(newLength);
-  changeObserver.observe(video, { attributes: true });
-
-}
 
 // Logic for calculating time in minutes and seconds 
 function calculateTime() {
@@ -33,7 +44,7 @@ function sendLength() {
   let { minutes, seconds } = calculateTime();  // destructuring
   time = `${Math.floor(minutes)} min ${seconds} sec`;
   chrome.runtime.sendMessage({ time });
-  
+
   console.log(`${Math.floor(minutes)}mins ${seconds}sec`)
 }
 
