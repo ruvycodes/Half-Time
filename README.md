@@ -1,0 +1,1 @@
+Half Time is a chrome extension which focuses on improving UX by specifying how much video length user has reduced by watching a video at a certain speed. Enable the extension and after changing the speed of the video pause the video and click on the extension to view the reduced length.
