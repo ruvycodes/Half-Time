@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Playback Speed Timer",
+  "name": "Half-Time",
   "version": "1.0",
   "description": "Calculate time saved by changing YouTube video playback speed.",
   "permissions": ["activeTab" , "tabs"],
